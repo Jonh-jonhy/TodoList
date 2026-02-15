@@ -20,4 +20,4 @@ Une application de gestion de tâches interactive, fluide et responsive réalis�
 Si vous souhaitez tester le projet localement :
 1. Clonez le dépôt :
    ```bash
-   git clone https://github.com
+   git clone https://github.com/Jonh-jonhy/TodoList
