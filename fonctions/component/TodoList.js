@@ -1,4 +1,5 @@
 import { createElement } from "../dom.js"
+import { cloneTemplate } from "../dom.js"
 
 /**
  * @typedef {object} Todo
@@ -29,21 +30,10 @@ export class TodoList {
      * @type {HTMLElement}
      */
     appendTo(element) {
+        element.append(
+            cloneTemplate('todoList-layout')
+        )
         this.#element = element
-        element.innerHTML = `<form class="d-flex pb-4">
-            <input required="" class="form-control" type="text" placeholder="Acheter des patates..." name="title" data-com.bitwarden.browser.user-edited="yes">
-            <button class="btn btn-primary">Ajouter</button>
-        </form>
-        <main>
-            <div class="btn-group mb-4" role="group">
-                <button type="button" class=" btn btn-outline-primary active" data-filter="all">Toutes</button>
-                <button type="button" class=" btn btn-outline-primary" data-filter="todo">A faire</button>
-                <button type="button" class=" btn btn-outline-primary" data-filter="done">Faites</button>
-            </div>
-
-            <ul class="list-group">
-            </ul>
-        </main> `
 
         for (const task of this.#todos) {
             const todo = new Todo(task)
@@ -69,13 +59,13 @@ export class TodoList {
                     listStatut.classList.add('hide-todo')
                     listStatut.classList.remove('hide-done')
 
-                } else if (filter === 'todo') {  
+                } else if (filter === 'todo') {
                     listStatut.classList.add('hide-done')
                     listStatut.classList.remove('hide-todo')
 
                 } else {
-                   listStatut.classList.remove('hide-done')
-                   listStatut.classList.remove('hide-todo')
+                    listStatut.classList.remove('hide-done')
+                    listStatut.classList.remove('hide-todo')
                 }
             })
         });
@@ -110,7 +100,6 @@ export class TodoList {
      */
     remove(event) {
         event.preventDefault()
-        console.log(event.currentTarget.parentElement)
         event.currentTarget.parentElement.remove()
     }
 }
@@ -123,35 +112,33 @@ class Todo {
 
     constructor(todo) {
         const id = `todo-${todo.id}`
-        
-        const li = createElement('li', {
-            class: todo.completed ? 'todo list-group-item d-flex align-items-center fait' : 'todo list-group-item d-flex align-items-center a-faire'
-        })
-        const input = createElement('input', {
-            class: 'form-check-input',
-            type: 'checkbox',
-            id,
-            checked: todo.completed ? ' ' : false
-        })
 
+        const li = cloneTemplate('todoList-item').firstElementChild
+        if (todo.completed) {
+            li.setAttribute('class','todo list-group-item d-flex align-items-center fait')
+        } else {
+            li.setAttribute('class','todo list-group-item d-flex align-items-center a-faire')
+        }
+
+        const input = li.querySelector('input')
+        input.setAttribute('class', 'form-check-input')
+        input.setAttribute('type', 'checkbox')
+        input.setAttribute('id', id)
+        if (todo.completed) {
+            input.setAttribute('checked',' ')
+        }
         input.addEventListener('change', (e) => {
             this.Toggle(e)
         })
 
-        const label = createElement('label', {
-            class: 'ms-2 form-check-label',
-            for: id
-        })
-
+        const label = li.querySelector('label')
+        label.setAttribute('class', 'ms-2 form-check-label')
+        label.setAttribute('id', id)
         label.innerText = todo.title
-        const deleteBtn = createElement('label', {
-            class: 'ms-auto btn btn-danger btn-sm',
-        })
 
+        const deleteBtn = li.querySelector('.btn')
+        deleteBtn.setAttribute('class', 'ms-auto btn btn-danger btn-sm')
         deleteBtn.innerHTML = `<i class="bi-trash"></i>`
-        li.append(input)
-        li.append(label)
-        li.append(deleteBtn)
 
         deleteBtn.addEventListener('click', (e) => {
             this.remove(e)

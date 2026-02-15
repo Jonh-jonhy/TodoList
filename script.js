@@ -13,4 +13,5 @@ try {
     })
     errorDiv.innerText = 'impossible de contacter le server'
     document.body.prepend(errorDiv)
+    console.log(error)
 }

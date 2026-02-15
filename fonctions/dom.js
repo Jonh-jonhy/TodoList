@@ -7,10 +7,19 @@ export function createElement(tagName, property = {}) {
 
     const element = document.createElement(tagName)
 
-    for (const [attribut, value] of Object.entries(property)){
+    for (const [attribut, value] of Object.entries(property)) {
         if (!value === false) {
-            element.setAttribute(`${attribut}`,`${value}`)
+            element.setAttribute(`${attribut}`, `${value}`)
         }
     }
     return element
+}
+
+/**
+ * 
+ * @param {string} id 
+ * @returns {DocumentFragmentff}
+ */
+export function cloneTemplate(id) { 
+    return document.getElementById(id).content.cloneNode(true)
 }
